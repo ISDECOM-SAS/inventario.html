@@ -163,7 +163,7 @@
 
 <script>
     // 🔗 REEMPLAZA ESTO CON LA URL DE TU SCRIPT DE INVENTARIO
-    const apiURL = "https://script.google.com/macros/s/AKfycbxKMNJiU367N0PJcXhhr14jzcccGUNiKpSv_tv9AHmF48DrxjQJs8NTwGZSmuHYPs1WgQ/exec";
+    const apiURL = "https://script.google.com/macros/s/AKfycbzJqfE6F7viZhuRq5y28Ht9-MhL9kOp2TG5lgH9FnUn5AzdTEKgKtehp00S7zwxN6Io4g/exec";
 
     function cambiarPestana(seccion) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
