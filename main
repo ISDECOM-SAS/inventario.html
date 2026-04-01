@@ -98,7 +98,7 @@
 </div>
 
 <script>
-    const url = "https://script.google.com/macros/s/AKfycbzJqfE6F7viZhuRq5y28Ht9-MhL9kOp2TG5lgH9FnUn5AzdTEKgKtehp00S7zwxN6Io4g/exec";
+    const url = "https://script.google.com/macros/s/AKfycbwMpX9MnfJFHQLsxyzxT8lT0ERtP4DMsFZp68uoGUzDpmFTOY-Q3IyY-g3Oh-nTZn1e-A/exec";
 
     function tab(id) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
