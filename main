@@ -3,279 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario - ISDECOM</title>
-    <meta name="theme-color" content="#008fcc">
+    <title>Inventario ISDECOM</title>
     <style>
-        :root { --azul-principal: #008fcc; --azul-oscuro: #008cc7; --gris-texto: #313231; --fondo-app: #f4f7f6; --verde: #137333; --rojo: #c53929; }
-        body, input, select, button, .tab, table { font-family: 'Calibri', sans-serif; font-size: 13px; text-transform: uppercase; }
-        body { background-color: var(--fondo-app); margin: 0; padding: 10px; color: var(--gris-texto); }
-        .form-container { background: white; max-width: 600px; margin: 10px auto; padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
-        .header-container { text-align: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
-        .logo-isdecom { max-width: 150px; height: auto; margin-bottom: 5px; }
-        h2 { color: var(--azul-principal); margin: 0 0 5px 0; font-size: 15px; text-align: center;}
-        
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; background-color: white; }
-        .tab { flex: 1; text-align: center; padding: 10px 5px; font-weight: bold; cursor: pointer; color: var(--gris-texto); background-color: #f0f0f0; border-radius: 6px; font-size: 12px;}
-        .tab.activa { background-color: var(--azul-principal); color: white; }
-        .seccion-formulario { display: none; } 
-        .seccion-formulario.activa { display: block; }
-        
-        label { font-weight: bold; display: block; margin-top: 15px; color: var(--azul-oscuro); }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-weight: bold;}
-        input:focus, select:focus { border-color: var(--azul-principal); outline: none; }
-        .dos-columnas { display: flex; gap: 10px; } 
-        .columna { flex: 1; }
-        button.btn-accion { width: 100%; background-color: var(--azul-principal); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
-        
-        .tipo-operacion { display: flex; gap: 10px; margin-top: 10px; }
-        .radio-btn { flex: 1; text-align: center; }
-        .radio-btn input[type="radio"] { display: none; }
-        .radio-btn label { display: block; padding: 10px; border-radius: 8px; border: 2px solid #ddd; cursor: pointer; font-weight: bold; margin-top: 0; color: #555;}
-        .radio-btn input[type="radio"]:checked + label.ingreso { background-color: #e6f4ea; border-color: var(--verde); color: var(--verde); }
-        .radio-btn input[type="radio"]:checked + label.retiro { background-color: #fce8e6; border-color: var(--rojo); color: var(--rojo); }
-
-        .tabla-contenedor { overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: var(--azul-principal); color: white; position: sticky; top: 0; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .cantidad-badge { font-weight: bold; padding: 4px 8px; border-radius: 4px; background: #e0e0e0; }
-        .badge-verde { background: #e6f4ea; color: var(--verde); }
-        .badge-rojo { background: #fce8e6; color: var(--rojo); }
-        
-        .loader { display: none; text-align: center; margin-top: 15px; color: var(--azul-principal); font-weight: bold; }
-        button.btn-secundario { background-color: #453e43; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 10px; width: 100%;}
+        :root { --azul: #008fcc; --fondo: #f4f7f6; --rojo: #c53929; --verde: #137333; }
+        body { font-family: 'Calibri', sans-serif; background: var(--fondo); padding: 10px; text-transform: uppercase; font-size: 13px; }
+        .container { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h2 { color: var(--azul); text-align: center; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tab { flex: 1; padding: 10px; background: #eee; text-align: center; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        .tab.active { background: var(--azul); color: white; }
+        .section { display: none; }
+        .section.active { display: block; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #444; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-weight: bold; }
+        button { width: 100%; padding: 12px; background: var(--azul); color: white; border: none; border-radius: 5px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: var(--azul); color: white; }
+        .badge { font-weight: bold; padding: 2px 5px; border-radius: 3px; }
+        .badge-v { background: #e6f4ea; color: var(--verde); }
+        .badge-r { background: #fce8e6; color: var(--rojo); }
     </style>
 </head>
 <body>
 
-<datalist id="listaHerramientas"></datalist>
-
-<div class="form-container">
-    <div class="header-container">
-        <img src="https://drive.google.com/thumbnail?id=1eVECUsGoJe41dSoOIG0uWgzElK70Uqj-&sz=w500" class="logo-isdecom" alt="ISDECOM">
-        <h2>SISTEMA DE INVENTARIO</h2>
-    </div>
-
-    <div class="tabs">
-        <div class="tab activa" onclick="cambiarPestana('consulta')">📊 STOCK</div>
-        <div class="tab" onclick="cambiarPestana('herramientas')">🔧 HERRAMIENTAS</div>
-        <div class="tab" onclick="cambiarPestana('accesorios')">🔌 ACCESORIOS</div>
-    </div>
+<div class="container">
+    <h2>INVENTARIO ISDECOM</h2>
     
-    <div id="seccionConsulta" class="seccion-formulario activa">
-        <button class="btn-secundario" onclick="cargarInventario()">🔄 ACTUALIZAR STOCK</button>
-        <div class="loader" id="loaderConsulta" style="display: block;">⏳ CARGANDO INVENTARIO...</div>
-        
-        <div id="contenidoInventario" style="display: none;">
-            <h3 style="color: var(--azul-oscuro); border-bottom: 2px solid #ddd; padding-bottom: 5px;">🔧 HERRAMIENTAS EN STOCK</h3>
-            <div class="tabla-contenedor">
-                <table id="tablaHerramientas">
-                    <thead><tr><th>CANT</th><th>HERRAMIENTA</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-
-            <h3 style="color: var(--azul-oscuro); border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">🔌 ACCESORIOS DISPONIBLES</h3>
-            <div class="tabla-contenedor">
-                <table id="tablaAccesorios">
-                    <thead><tr><th>CANT</th><th>MARCA/MODELO</th><th>SERIAL</th><th>P. VENTA</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
+    <div class="tabs">
+        <div class="tab active" onclick="tab('stock')">STOCK</div>
+        <div class="tab" onclick="tab('herr')">HERR.</div>
+        <div class="tab" onclick="tab('acc')">ACC.</div>
     </div>
 
-    <div id="seccionHerramientas" class="seccion-formulario">
-        <h2>GESTIÓN DE HERRAMIENTAS</h2>
-        <form id="formHerramientas">
-            <label>TÉCNICO RESPONSABLE *</label>
-            <select id="tecnicoH" required>
-                <option value="">Seleccione Técnico...</option>
+    <div id="stock" class="section active">
+        <button onclick="cargar()" style="margin-bottom:10px; background:#444;">🔄 REFRESCAR STOCK</button>
+        <div id="loadStock" class="loader" style="display:block">⏳ CARGANDO...</div>
+        <div id="tablas"></div>
+    </div>
+
+    <div id="herr" class="section">
+        <form id="fH">
+            <label>TÉCNICO</label>
+            <select id="tecH" required>
+                <option value="FRANCISCO">FRANCISCO</option>
                 <option value="JUAN CAMILO">JUAN CAMILO</option>
                 <option value="ANDRES FELIPE">ANDRES FELIPE</option>
                 <option value="CAMILO HERRERA">CAMILO HERRERA</option>
                 <option value="FELIPE DE LOS RIOS">FELIPE DE LOS RIOS</option>
                 <option value="JUAN FELIPE">JUAN FELIPE</option>
-                <option value="FRANCISCO">FRANCISCO</option>
                 <option value="ELIANA">ELIANA</option>
             </select>
-
-            <label>TIPO DE OPERACIÓN *</label>
-            <div class="tipo-operacion">
-                <div class="radio-btn"><input type="radio" id="ingresoH" name="operacionH" value="ingreso" checked><label for="ingresoH" class="ingreso">🟢 INGRESO</label></div>
-                <div class="radio-btn"><input type="radio" id="retiroH" name="operacionH" value="retiro"><label for="retiroH" class="retiro">🔴 RETIRO</label></div>
-            </div>
-
-            <label>NOMBRE DE LA HERRAMIENTA *</label>
-            <input type="text" list="listaHerramientas" id="nombreH" placeholder="Seleccione o escriba..." required>
-            
-            <label>CANTIDAD *</label>
-            <input type="number" id="cantidadH" min="1" placeholder="Ej: 1" required>
-            
-            <button type="submit" id="btnEnviarH" class="btn-accion">💾 PROCESAR HERRAMIENTA</button>
-            <div class="loader" id="loaderH">GUARDANDO... ⏳</div>
+            <label>OPERACIÓN</label>
+            <select id="opH"><option value="ingreso">🟢 INGRESO</option><option value="retiro">🔴 RETIRO</option></select>
+            <label>HERRAMIENTA</label>
+            <input type="text" id="nomH" required placeholder="NOMBRE">
+            <label>CANTIDAD</label>
+            <input type="number" id="canH" required min="1">
+            <button type="submit" id="btnH">💾 GUARDAR HERRAMIENTA</button>
+            <div id="lH" class="loader">⏳ SINCRONIZANDO...</div>
         </form>
     </div>
 
-    <div id="seccionAccesorios" class="seccion-formulario">
-        <h2>GESTIÓN DE ACCESORIOS</h2>
-        <form id="formAccesorios">
-            <label>TÉCNICO RESPONSABLE *</label>
-            <select id="tecnicoA" required>
-                <option value="">Seleccione Técnico...</option>
+    <div id="acc" class="section">
+        <form id="fA">
+            <label>TÉCNICO</label>
+            <select id="tecA" required>
+                <option value="FRANCISCO">FRANCISCO</option>
                 <option value="JUAN CAMILO">JUAN CAMILO</option>
                 <option value="ANDRES FELIPE">ANDRES FELIPE</option>
                 <option value="CAMILO HERRERA">CAMILO HERRERA</option>
                 <option value="FELIPE DE LOS RIOS">FELIPE DE LOS RIOS</option>
                 <option value="JUAN FELIPE">JUAN FELIPE</option>
-                <option value="FRANCISCO">FRANCISCO</option>
                 <option value="ELIANA">ELIANA</option>
             </select>
-
-            <label>TIPO DE OPERACIÓN *</label>
-            <div class="tipo-operacion">
-                <div class="radio-btn"><input type="radio" id="ingresoA" name="operacionA" value="ingreso" checked><label for="ingresoA" class="ingreso">🟢 INGRESO</label></div>
-                <div class="radio-btn"><input type="radio" id="retiroA" name="operacionA" value="retiro"><label for="retiroA" class="retiro">🔴 RETIRO</label></div>
+            <label>OPERACIÓN</label>
+            <select id="opA"><option value="ingreso">🟢 INGRESO</option><option value="retiro">🔴 RETIRO</option></select>
+            <label>MARCA / MODELO</label>
+            <input type="text" id="marA" required placeholder="EJ: HP / 14-CF">
+            <label>SERIAL</label>
+            <input type="text" id="serA" required placeholder="SERIAL ÚNICO">
+            <label>CANTIDAD</label>
+            <input type="number" id="canA" required min="1">
+            <label>P. COMPRA / P. VENTA</label>
+            <div style="display:flex; gap:5px">
+                <input type="number" id="pcA" placeholder="COMPRA">
+                <input type="number" id="pvA" placeholder="VENTA">
             </div>
-
-            <div class="dos-columnas">
-                <div class="columna"><label>MARCA *</label><input type="text" id="marcaA" placeholder="Ej: HP" required></div>
-                <div class="columna"><label>MODELO *</label><input type="text" id="modeloA" placeholder="Ej: 14-CF" required></div>
-            </div>
-
-            <label>NÚMERO DE SERIAL *</label>
-            <input type="text" id="serialA" placeholder="Ej: CND1234567" required>
-            
-            <label>CANTIDAD *</label>
-            <input type="number" id="cantidadA" min="1" placeholder="Ej: 1" required>
-            
-            <div class="dos-columnas">
-                <div class="columna"><label>PRECIO COMPRA ($)</label><input type="number" id="pCompraA" placeholder="Ej: 150000" required></div>
-                <div class="columna"><label>PRECIO VENTA ($)</label><input type="number" id="pVentaA" placeholder="Ej: 250000" required></div>
-            </div>
-
-            <button type="submit" id="btnEnviarA" class="btn-accion">💾 PROCESAR ACCESORIO</button>
-            <div class="loader" id="loaderA">GUARDANDO... ⏳</div>
+            <button type="submit" id="btnA">💾 GUARDAR ACCESORIO</button>
+            <div id="lA" class="loader">⏳ SINCRONIZANDO...</div>
         </form>
     </div>
 </div>
 
 <script>
-    // 🔗 REEMPLAZA ESTO CON LA URL DE TU SCRIPT DE INVENTARIO
-    const apiURL = "https://script.google.com/macros/s/AKfycbzJqfE6F7viZhuRq5y28Ht9-MhL9kOp2TG5lgH9FnUn5AzdTEKgKtehp00S7zwxN6Io4g/exec";
+    const url = "https://script.google.com/macros/s/AKfycbzJqfE6F7viZhuRq5y28Ht9-MhL9kOp2TG5lgH9FnUn5AzdTEKgKtehp00S7zwxN6Io4g/exec";
 
-    function cambiarPestana(seccion) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
-        document.querySelectorAll('.seccion-formulario').forEach(s => s.classList.remove('activa'));
-        
-        const tabsMap = { 'consulta': 0, 'herramientas': 1, 'accesorios': 2 };
-        document.querySelectorAll('.tab')[tabsMap[seccion]].classList.add('activa');
-        document.getElementById('seccion' + seccion.charAt(0).toUpperCase() + seccion.slice(1)).classList.add('activa');
+    function tab(id) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        document.getElementById(id).classList.add('active');
     }
 
-    document.addEventListener("DOMContentLoaded", () => { cargarInventario(); });
-
-    function cargarInventario() {
-        if(apiURL.includes("TU_URL")) return;
-
-        document.getElementById("loaderConsulta").style.display = "block";
-        document.getElementById("contenidoInventario").style.display = "none";
-
-        fetch(apiURL).then(r => r.json()).then(data => {
-            renderTabla("tablaHerramientas", data.herramientas, "herramientas");
-            renderTabla("tablaAccesorios", data.accesorios, "accesorios");
-            
-            const datalist = document.getElementById("listaHerramientas");
-            datalist.innerHTML = "";
-            if(data.herramientas && data.herramientas.length > 0) {
-                data.herramientas.forEach(f => {
-                    if(f[1]) datalist.innerHTML += `<option value="${f[1]}">`;
-                });
-            }
-
-            document.getElementById("loaderConsulta").style.display = "none";
-            document.getElementById("contenidoInventario").style.display = "block";
-        }).catch(e => {
-            document.getElementById("loaderConsulta").innerText = "❌ ERROR DE CONEXIÓN.";
-        });
+    async function cargar() {
+        document.getElementById('loadStock').style.display = 'block';
+        document.getElementById('tablas').innerHTML = '';
+        try {
+            const r = await fetch(url);
+            const d = await r.json();
+            let h = '<h4>HERRAMIENTAS</h4><table><tr><th>CANT</th><th>NOMBRE</th></tr>';
+            d.herramientas.forEach(f => {
+                let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
+                h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]}</td></tr>`;
+            });
+            h += '</table><h4 style="margin-top:20px">ACCESORIOS</h4><table><tr><th>CANT</th><th>INFO</th><th>SERIAL</th></tr>';
+            d.accesorios.forEach(f => {
+                let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
+                h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]} ${f[2]}</td><td>${f[3]}</td></tr>`;
+            });
+            document.getElementById('tablas').innerHTML = h + '</table>';
+        } catch(e) { alert("Error cargando datos"); }
+        document.getElementById('loadStock').style.display = 'none';
     }
 
-    function renderTabla(idTabla, filas, tipo) {
-        const tbody = document.querySelector(`#${idTabla} tbody`);
-        tbody.innerHTML = ""; 
-
-        if (!filas || filas.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay registros.</td></tr>`; return;
-        }
-
-        filas.forEach(fila => {
-            let cantidad = parseInt(fila[0]);
-            let claseBadge = cantidad > 0 ? "badge-verde" : (cantidad < 0 ? "badge-rojo" : "");
-            let insignia = `<span class="cantidad-badge ${claseBadge}">${cantidad}</span>`;
-
-            let tr = document.createElement("tr");
-            if (tipo === "herramientas") {
-                tr.innerHTML = `<td>${insignia}</td><td>${fila[1]}</td>`;
-            } else {
-                let pVentaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(fila[5] || 0);
-                tr.innerHTML = `<td>${insignia}</td><td><b>${fila[1]}</b><br>${fila[2]}</td><td>${fila[3]}</td><td>${pVentaFormat}</td>`;
-            }
-            tbody.appendChild(tr);
-        });
-    }
-
-    function procesarFormulario(tipo, payload, idFormulario, letraId) {
-        document.getElementById(`loader${letraId}`).style.display = 'block';
-        document.getElementById(`btnEnviar${letraId}`).style.display = 'none';
-        
-        fetch(apiURL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) })
-        .then(r => r.json()).then(res => {
-            alert(`✅ INVENTARIO ACTUALIZADO.`);
-            document.getElementById(idFormulario).reset();
-            document.getElementById(`loader${letraId}`).style.display = 'none';
-            document.getElementById(`btnEnviar${letraId}`).style.display = 'block';
-            cambiarPestana('consulta'); cargarInventario();
-        }).catch(err => {
-            alert("❌ ERROR DE CONEXIÓN.");
-            document.getElementById(`loader${letraId}`).style.display = 'none';
-            document.getElementById(`btnEnviar${letraId}`).style.display = 'block';
-        });
-    }
-
-    document.getElementById("formHerramientas").addEventListener("submit", (e) => {
+    document.getElementById('fH').onsubmit = async (e) => {
         e.preventDefault();
-        let operacion = document.querySelector('input[name="operacionH"]:checked').value;
-        let cantidad = parseInt(document.getElementById("cantidadH").value);
-        if (operacion === "retiro") cantidad = -Math.abs(cantidad); 
+        document.getElementById('lH').style.display = 'block';
+        document.getElementById('btnH').style.display = 'none';
+        let cant = parseInt(document.getElementById('canH').value);
+        if(document.getElementById('opH').value === 'retiro') cant = -Math.abs(cant);
+        
+        const payload = { tipo: "herramientas", herramienta: document.getElementById('nomH').value, cantidad: cant, tecnico: document.getElementById('tecH').value };
+        await enviar(payload, 'fH', 'lH', 'btnH');
+    };
 
-        let payload = { 
-            tipo: "herramientas", 
-            herramienta: document.getElementById("nombreH").value, 
-            cantidad: cantidad,
-            tecnico: document.getElementById("tecnicoH").value 
-        };
-        procesarFormulario("herramientas", payload, "formHerramientas", "H");
-    });
-
-    document.getElementById("formAccesorios").addEventListener("submit", (e) => {
+    document.getElementById('fA').onsubmit = async (e) => {
         e.preventDefault();
-        let operacion = document.querySelector('input[name="operacionA"]:checked').value;
-        let cantidad = parseInt(document.getElementById("cantidadA").value);
-        if (operacion === "retiro") cantidad = -Math.abs(cantidad); 
+        document.getElementById('lA').style.display = 'block';
+        document.getElementById('btnA').style.display = 'none';
+        let cant = parseInt(document.getElementById('canA').value);
+        if(document.getElementById('opA').value === 'retiro') cant = -Math.abs(cant);
 
-        let payload = { 
-            tipo: "accesorios", 
-            marca: document.getElementById("marcaA").value, 
-            modelo: document.getElementById("modeloA").value, 
-            serial: document.getElementById("serialA").value, 
-            cantidad: cantidad, 
-            precioCompra: document.getElementById("pCompraA").value, 
-            precioVenta: document.getElementById("pVentaA").value,
-            tecnico: document.getElementById("tecnicoA").value
+        const payload = { 
+            tipo: "accesorios", marca: document.getElementById('marA').value, modelo: "", 
+            serial: document.getElementById('serA').value, cantidad: cant, 
+            precioCompra: document.getElementById('pcA').value, precioVenta: document.getElementById('pvA').value,
+            tecnico: document.getElementById('tecA').value 
         };
-        procesarFormulario("accesorios", payload, "formAccesorios", "A");
-    });
+        await enviar(payload, 'fA', 'lA', 'btnA');
+    };
+
+    async function enviar(p, fId, lId, bId) {
+        try {
+            await fetch(url, { method: 'POST', body: JSON.stringify(p) });
+            alert("REGISTRO EXITOSO");
+            document.getElementById(fId).reset();
+            cargar();
+            tab('stock');
+        } catch(e) { alert("ERROR AL GUARDAR"); }
+        document.getElementById(lId).style.display = 'none';
+        document.getElementById(bId).style.display = 'block';
+    }
+
+    window.onload = cargar;
 </script>
 </body>
 </html>
