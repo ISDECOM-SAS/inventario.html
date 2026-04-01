@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#008fcc">
     <style>
         :root { --azul-principal: #008fcc; --azul-oscuro: #008cc7; --gris-texto: #313231; --fondo-app: #f4f7f6; --verde: #137333; --rojo: #c53929; }
-        cuerpo, entrada, seleccionar, botón, .tab, tabla { font-family: 'Calibri', sans-serif; font-size: 13px; text-transform: uppercase; }
+        body, input, select, button, .tab, table { font-family: 'Calibri', sans-serif; font-size: 13px; text-transform: uppercase; }
         body { background-color: var(--fondo-app); margin: 0; padding: 10px; color: var(--gris-texto); }
         .form-container { background: white; max-width: 600px; margin: 10px auto; padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
         .header-container { text-align: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
@@ -17,12 +17,14 @@
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; background-color: white; }
         .tab { flex: 1; text-align: center; padding: 10px 5px; font-weight: bold; cursor: pointer; color: var(--gris-texto); background-color: #f0f0f0; border-radius: 6px; font-size: 12px;}
         .tab.activa { background-color: var(--azul-principal); color: white; }
-        .seccion-formulario { mostrar: ninguno; } .seccion-formulario.activa { display:bloque; }
+        .seccion-formulario { display: none; } 
+        .seccion-formulario.activa { display: block; }
         
-        etiqueta { peso de fuente: negrita; mostrar: bloque; margen superior: 15px; color: var(--azul-oscuro); }
+        label { font-weight: bold; display: block; margin-top: 15px; color: var(--azul-oscuro); }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-weight: bold;}
         input:focus, select:focus { border-color: var(--azul-principal); outline: none; }
-        .dos-columnas { mostrar: flex; espacio: 10px; } .columna { flexionar: 1; }
+        .dos-columnas { display: flex; gap: 10px; } 
+        .columna { flex: 1; }
         button.btn-accion { width: 100%; background-color: var(--azul-principal); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; margin-top: 20px; cursor: pointer; transition: 0.3s; }
         
         .tipo-operacion { display: flex; gap: 10px; margin-top: 10px; }
@@ -30,22 +32,22 @@
         .radio-btn input[type="radio"] { display: none; }
         .radio-btn label { display: block; padding: 10px; border-radius: 8px; border: 2px solid #ddd; cursor: pointer; font-weight: bold; margin-top: 0; color: #555;}
         .radio-btn input[type="radio"]:checked + label.ingreso { background-color: #e6f4ea; border-color: var(--verde); color: var(--verde); }
-        .radio-btn entrada[tipo="radio"]:marcado + etiqueta.retiro { color de fondo: #fce8e6; color del borde: var(--rojo); color: var(--rojo); }
+        .radio-btn input[type="radio"]:checked + label.retiro { background-color: #fce8e6; border-color: var(--rojo); color: var(--rojo); }
 
         .tabla-contenedor { overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd; }
-        tabla { ancho: 100%; colapso de borde: colapso; ancho mínimo: 400px; }
-        th, td { relleno: 10px; alineación de texto: izquierda; borde inferior: 1px sólido #ddd; }
+        table { width: 100%; border-collapse: collapse; min-width: 400px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: var(--azul-principal); color: white; position: sticky; top: 0; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         .cantidad-badge { font-weight: bold; padding: 4px 8px; border-radius: 4px; background: #e0e0e0; }
-        .badge-verde { fondo: #e6f4ea; color: var(--verde); }
-        .badge-rojo { fondo: #fce8e6; color: var(--rojo); }
+        .badge-verde { background: #e6f4ea; color: var(--verde); }
+        .badge-rojo { background: #fce8e6; color: var(--rojo); }
         
         .loader { display: none; text-align: center; margin-top: 15px; color: var(--azul-principal); font-weight: bold; }
         button.btn-secundario { background-color: #453e43; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 10px; width: 100%;}
     </style>
 </head>
-<cuerpo>
+<body>
 
 <datalist id="listaHerramientas"></datalist>
 
@@ -62,24 +64,24 @@
     </div>
     
     <div id="seccionConsulta" class="seccion-formulario activa">
-        <botón class="btn-secundario" onclick="cargarInventario()">🔄ACTUALIZAR STOCK</botón>
+        <button class="btn-secundario" onclick="cargarInventario()">🔄 ACTUALIZAR STOCK</button>
         <div class="loader" id="loaderConsulta" style="display: block;">⏳ CARGANDO INVENTARIO...</div>
         
         <div id="contenidoInventario" style="display: none;">
-            <h3 style="color: var(--azul-oscuro); border-bottom: 2px solid #ddd; padding-bottom: 5px;">🔧 HERRAMIENTAS</h3>
+            <h3 style="color: var(--azul-oscuro); border-bottom: 2px solid #ddd; padding-bottom: 5px;">🔧 HERRAMIENTAS EN STOCK</h3>
             <div class="tabla-contenedor">
                 <table id="tablaHerramientas">
                     <thead><tr><th>CANT</th><th>HERRAMIENTA</th></tr></thead>
                     <tbody></tbody>
-                </tabla>
+                </table>
             </div>
 
-            <h3 style="color: var(--azul-oscuro); border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">🔌 ACCESORIOS</h3>
+            <h3 style="color: var(--azul-oscuro); border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">🔌 ACCESORIOS DISPONIBLES</h3>
             <div class="tabla-contenedor">
                 <table id="tablaAccesorios">
                     <thead><tr><th>CANT</th><th>MARCA/MODELO</th><th>SERIAL</th><th>P. VENTA</th></tr></thead>
                     <tbody></tbody>
-                </tabla>
+                </table>
             </div>
         </div>
     </div>
@@ -87,6 +89,18 @@
     <div id="seccionHerramientas" class="seccion-formulario">
         <h2>GESTIÓN DE HERRAMIENTAS</h2>
         <form id="formHerramientas">
+            <label>TÉCNICO RESPONSABLE *</label>
+            <select id="tecnicoH" required>
+                <option value="">Seleccione Técnico...</option>
+                <option value="JUAN CAMILO">JUAN CAMILO</option>
+                <option value="ANDRES FELIPE">ANDRES FELIPE</option>
+                <option value="CAMILO HERRERA">CAMILO HERRERA</option>
+                <option value="FELIPE DE LOS RIOS">FELIPE DE LOS RIOS</option>
+                <option value="JUAN FELIPE">JUAN FELIPE</option>
+                <option value="FRANCISCO">FRANCISCO</option>
+                <option value="ELIANA">ELIANA</option>
+            </select>
+
             <label>TIPO DE OPERACIÓN *</label>
             <div class="tipo-operacion">
                 <div class="radio-btn"><input type="radio" id="ingresoH" name="operacionH" value="ingreso" checked><label for="ingresoH" class="ingreso">🟢 INGRESO</label></div>
@@ -94,22 +108,34 @@
             </div>
 
             <label>NOMBRE DE LA HERRAMIENTA *</label>
-            <input type="text" list="listaHerramientas" id="nombreH" placeholder="Seleccione o escriba una nueva..." requerido>
+            <input type="text" list="listaHerramientas" id="nombreH" placeholder="Seleccione o escriba..." required>
             
             <label>CANTIDAD *</label>
-            <input type="number" id="cantidadH" min="1" placeholder="Ej: 2" required>
+            <input type="number" id="cantidadH" min="1" placeholder="Ej: 1" required>
             
-            <botón tipo="submit" id="btnEnviarH" class="btn-accion">💾 PROCESAR HERRAMIENTA</botón>
-            <div class="loader" id="loaderH">GUARDANDO EN LA BASE DE DATOS... ⏳</div>
+            <button type="submit" id="btnEnviarH" class="btn-accion">💾 PROCESAR HERRAMIENTA</button>
+            <div class="loader" id="loaderH">GUARDANDO... ⏳</div>
         </form>
     </div>
 
     <div id="seccionAccesorios" class="seccion-formulario">
         <h2>GESTIÓN DE ACCESORIOS</h2>
         <form id="formAccesorios">
+            <label>TÉCNICO RESPONSABLE *</label>
+            <select id="tecnicoA" required>
+                <option value="">Seleccione Técnico...</option>
+                <option value="JUAN CAMILO">JUAN CAMILO</option>
+                <option value="ANDRES FELIPE">ANDRES FELIPE</option>
+                <option value="CAMILO HERRERA">CAMILO HERRERA</option>
+                <option value="FELIPE DE LOS RIOS">FELIPE DE LOS RIOS</option>
+                <option value="JUAN FELIPE">JUAN FELIPE</option>
+                <option value="FRANCISCO">FRANCISCO</option>
+                <option value="ELIANA">ELIANA</option>
+            </select>
+
             <label>TIPO DE OPERACIÓN *</label>
             <div class="tipo-operacion">
-                <div class="radio-btn"><input type="radio" id="ingresoA" name="operacionA" value="ingreso" marcado><label for="ingresoA" class="ingreso">🟢 INGRESO</label></div>
+                <div class="radio-btn"><input type="radio" id="ingresoA" name="operacionA" value="ingreso" checked><label for="ingresoA" class="ingreso">🟢 INGRESO</label></div>
                 <div class="radio-btn"><input type="radio" id="retiroA" name="operacionA" value="retiro"><label for="retiroA" class="retiro">🔴 RETIRO</label></div>
             </div>
 
@@ -122,39 +148,36 @@
             <input type="text" id="serialA" placeholder="Ej: CND1234567" required>
             
             <label>CANTIDAD *</label>
-            <input type="number" id="cantidadA" min="1" placeholder="Ej: 5" required>
+            <input type="number" id="cantidadA" min="1" placeholder="Ej: 1" required>
             
             <div class="dos-columnas">
                 <div class="columna"><label>PRECIO COMPRA ($)</label><input type="number" id="pCompraA" placeholder="Ej: 150000" required></div>
                 <div class="columna"><label>PRECIO VENTA ($)</label><input type="number" id="pVentaA" placeholder="Ej: 250000" required></div>
             </div>
 
-            <botón tipo="submit" id="btnEnviarA" class="btn-accion">💾 PROCESAR ACCESORIO</botón>
-            <div class="loader" id="loaderA">GUARDANDO EN LA BASE DE DATOS... ⏳</div>
+            <button type="submit" id="btnEnviarA" class="btn-accion">💾 PROCESAR ACCESORIO</button>
+            <div class="loader" id="loaderA">GUARDANDO... ⏳</div>
         </form>
     </div>
-
 </div>
 
 <script>
-    // =========================================================
-    // 🔗 PEGA AQUÍ TU NUEVO ENLACE DE APPS SCRIPT DE INVENTARIO
-    // =========================================================
-    const apiURL = "https://script.google.com/macros/s/AKfycbxKMNJiU367N0PJcXhhr14jzcccGUNiKpSv_tv9AHmF48DrxjQJs8NTwGZSmuHYPs1WgQ/exeC";
+    // 🔗 REEMPLAZA ESTO CON LA URL DE TU SCRIPT DE INVENTARIO
+    const apiURL = "https://script.google.com/macros/s/AKfycbxKMNJiU367N0PJcXhhr14jzcccGUNiKpSv_tv9AHmF48DrxjQJs8NTwGZSmuHYPs1WgQ/exec";
 
-    function cambiarPestana(sección) {
+    function cambiarPestana(seccion) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
         document.querySelectorAll('.seccion-formulario').forEach(s => s.classList.remove('activa'));
         
         const tabsMap = { 'consulta': 0, 'herramientas': 1, 'accesorios': 2 };
         document.querySelectorAll('.tab')[tabsMap[seccion]].classList.add('activa');
-        document.getElementById('seccion' + sección.charAt(0).toUpperCase() + sección.slice(1)).classList.add('activa');
+        document.getElementById('seccion' + seccion.charAt(0).toUpperCase() + seccion.slice(1)).classList.add('activa');
     }
 
     document.addEventListener("DOMContentLoaded", () => { cargarInventario(); });
 
-    función cargarInventario() {
-        if(apiURL === "PEGAR_AQUI_TU_NUEVO_ENLACE_DE_APPS_SCRIPT") { retorno; }
+    function cargarInventario() {
+        if(apiURL.includes("TU_URL")) return;
 
         document.getElementById("loaderConsulta").style.display = "block";
         document.getElementById("contenidoInventario").style.display = "none";
@@ -163,11 +186,10 @@
             renderTabla("tablaHerramientas", data.herramientas, "herramientas");
             renderTabla("tablaAccesorios", data.accesorios, "accesorios");
             
-            // ✅ CARGAR EL DESPLEGABLE INTELIGENTE DE HERRAMIENTAS
             const datalist = document.getElementById("listaHerramientas");
             datalist.innerHTML = "";
-            if(datos.herramientas && datos.herramientas.longitud > 0) {
-                datos.herramientas.forEach(f => {
+            if(data.herramientas && data.herramientas.length > 0) {
+                data.herramientas.forEach(f => {
                     if(f[1]) datalist.innerHTML += `<option value="${f[1]}">`;
                 });
             }
@@ -184,7 +206,7 @@
         tbody.innerHTML = ""; 
 
         if (!filas || filas.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay registros disponibles.</td></tr>`; return;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay registros.</td></tr>`; return;
         }
 
         filas.forEach(fila => {
@@ -194,10 +216,10 @@
 
             let tr = document.createElement("tr");
             if (tipo === "herramientas") {
-                tr.innerHTML = `<td>${badge}</td><td>${fila[1]}</td>`;
-            } demás {
+                tr.innerHTML = `<td>${insignia}</td><td>${fila[1]}</td>`;
+            } else {
                 let pVentaFormat = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(fila[5] || 0);
-                tr.innerHTML = `<td>${badge}</td><td><b>${fila[1]}</b><br>${fila[2]}</td><td>${fila[3]}</td><td>${pVentaFormat}</td>`;
+                tr.innerHTML = `<td>${insignia}</td><td><b>${fila[1]}</b><br>${fila[2]}</td><td>${fila[3]}</td><td>${pVentaFormat}</td>`;
             }
             tbody.appendChild(tr);
         });
@@ -209,35 +231,49 @@
         
         fetch(apiURL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) })
         .then(r => r.json()).then(res => {
-            alert(`✅ INVENTARIO ACTUALIZADO CON ÉXITO.`);
+            alert(`✅ INVENTARIO ACTUALIZADO.`);
             document.getElementById(idFormulario).reset();
             document.getElementById(`loader${letraId}`).style.display = 'none';
             document.getElementById(`btnEnviar${letraId}`).style.display = 'block';
             cambiarPestana('consulta'); cargarInventario();
         }).catch(err => {
-            alert("❌ ERROR AL CONECTAR CON EL SERVIDOR.");
+            alert("❌ ERROR DE CONEXIÓN.");
             document.getElementById(`loader${letraId}`).style.display = 'none';
             document.getElementById(`btnEnviar${letraId}`).style.display = 'block';
         });
     }
 
-    document.getElementById("formHerramientas").addEventListener("enviar", (e) => {
+    document.getElementById("formHerramientas").addEventListener("submit", (e) => {
         e.preventDefault();
-        let operación = document.querySelector('input[name="operacionH"]:checked').value;
-        let cantidadIngresada = parseInt(document.getElementById("cantidadH").value);
-        if (operacion === "retiro") cantidadIngresada = -Math.abs(cantidadIngresada); 
+        let operacion = document.querySelector('input[name="operacionH"]:checked').value;
+        let cantidad = parseInt(document.getElementById("cantidadH").value);
+        if (operacion === "retiro") cantidad = -Math.abs(cantidad); 
 
-        let payload = { tipo: "herramientas", herramienta: document.getElementById("nombreH").value, cantidad: cantidadIngresada };
+        let payload = { 
+            tipo: "herramientas", 
+            herramienta: document.getElementById("nombreH").value, 
+            cantidad: cantidad,
+            tecnico: document.getElementById("tecnicoH").value 
+        };
         procesarFormulario("herramientas", payload, "formHerramientas", "H");
     });
 
     document.getElementById("formAccesorios").addEventListener("submit", (e) => {
         e.preventDefault();
-        let operacion = document.querySelector('input[nombre="operacionA"]:checked').value;
-        let cantidadIngresada = parseInt(document.getElementById("cantidadA").value);
-        if (operacion === "retiro") cantidadIngresada = -Math.abs(cantidadIngresada); 
+        let operacion = document.querySelector('input[name="operacionA"]:checked').value;
+        let cantidad = parseInt(document.getElementById("cantidadA").value);
+        if (operacion === "retiro") cantidad = -Math.abs(cantidad); 
 
-        let payload = { tipo: "accesorios", marca: document.getElementById("marcaA").value, modelo: document.getElementById("modeloA").value, serial: document.getElementById("serialA").value, cantidad: cantidadIngresada, precioCompra: document.getElementById("pCompraA").value, precioVenta: document.getElementById("pVentaA").value };
+        let payload = { 
+            tipo: "accesorios", 
+            marca: document.getElementById("marcaA").value, 
+            modelo: document.getElementById("modeloA").value, 
+            serial: document.getElementById("serialA").value, 
+            cantidad: cantidad, 
+            precioCompra: document.getElementById("pCompraA").value, 
+            precioVenta: document.getElementById("pVentaA").value,
+            tecnico: document.getElementById("tecnicoA").value
+        };
         procesarFormulario("accesorios", payload, "formAccesorios", "A");
     });
 </script>
