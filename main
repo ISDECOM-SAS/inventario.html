@@ -6,25 +6,25 @@
     <title>Inventario ISDECOM</title>
     <style>
         :root { --azul: #008fcc; --fondo: #f4f7f6; --rojo: #c53929; --verde: #137333; }
-        body { font-family: 'Calibri', sans-serif; background: var(--fondo); padding: 10px; text-transform: uppercase; font-size: 13px; }
-        .container { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Calibri', sans-serif; background: var(--fondo); padding: 10px; text-transform: uppercase; font-size: 13px; margin: 0; }
+        .container { background: white; max-width: 500px; margin: 20px auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         h2 { color: var(--azul); text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--azul); padding-bottom: 10px; }
         .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tab { flex: 1; padding: 10px; background: #eee; text-align: center; cursor: pointer; font-weight: bold; border-radius: 5px; }
+        .tab { flex: 1; padding: 12px; background: #eee; text-align: center; cursor: pointer; font-weight: bold; border-radius: 8px; }
         .tab.active { background: var(--azul); color: white; }
         .section { display: none; }
         .section.active { display: block; }
-        label { display: block; margin-top: 10px; font-weight: bold; color: #444; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-weight: bold; }
-        button { width: 100%; padding: 12px; background: var(--azul); color: white; border: none; border-radius: 5px; font-weight: bold; margin-top: 20px; cursor: pointer; }
-        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 10px; padding: 10px; background: #e1f5fe; border-radius: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #444; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-weight: bold; }
+        button { width: 100%; padding: 14px; background: var(--azul); color: white; border: none; border-radius: 8px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 15px; padding: 10px; border: 1px dashed var(--azul); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--azul); color: white; }
-        .badge { font-weight: bold; padding: 2px 5px; border-radius: 3px; display: inline-block; min-width: 20px; text-align: center; }
+        .badge { font-weight: bold; padding: 3px 6px; border-radius: 4px; display: inline-block; min-width: 25px; text-align: center; }
         .badge-v { background: #e6f4ea; color: var(--verde); }
         .badge-r { background: #fce8e6; color: var(--rojo); }
-        .error-msg { color: red; font-weight: bold; text-align: center; margin-top: 10px; font-size: 11px; border: 1px solid red; padding: 5px; display: none; }
+        h4 { margin-top: 25px; color: #333; border-left: 4px solid var(--azul); padding-left: 10px; }
     </style>
 </head>
 <body>
@@ -39,9 +39,8 @@
     </div>
 
     <div id="stock" class="section active">
-        <button onclick="cargar()" style="background:#444;">🔄 ACTUALIZAR LISTADO</button>
-        <div id="loadStock" class="loader">⏳ CONECTANDO CON EXCEL...</div>
-        <div id="errorBox" class="error-msg"></div>
+        <button onclick="cargar()" style="background:#444;">🔄 REFRESCAR INVENTARIO</button>
+        <div id="loadStock" class="loader">⏳ CONECTANDO CON LA API...</div>
         <div id="tablas"></div>
     </div>
 
@@ -59,12 +58,12 @@
             </select>
             <label>OPERACIÓN</label>
             <select id="opH"><option value="ingreso">🟢 INGRESO</option><option value="retiro">🔴 RETIRO</option></select>
-            <label>HERRAMIENTA</label>
-            <input type="text" id="nomH" required placeholder="NOMBRE">
+            <label>NOMBRE HERRAMIENTA / INSUMO</label>
+            <input type="text" id="nomH" required placeholder="EJ: TALADRO">
             <label>CANTIDAD</label>
             <input type="number" id="canH" required min="1" value="1">
-            <button type="submit" id="btnH">💾 GUARDAR HERRAMIENTA</button>
-            <div id="lH" class="loader">⏳ GUARDANDO...</div>
+            <button type="submit" id="btnH">💾 GUARDAR CAMBIO</button>
+            <div id="lH" class="loader">⏳ SINCRONIZANDO...</div>
         </form>
     </div>
 
@@ -82,21 +81,21 @@
             </select>
             <label>OPERACIÓN</label>
             <select id="opA"><option value="ingreso">🟢 INGRESO</option><option value="retiro">🔴 RETIRO</option></select>
-            <label>MARCA / MODELO</label>
-            <input type="text" id="marA" required placeholder="EQUIPO">
+            <label>EQUIPO / MARCA</label>
+            <input type="text" id="marA" required placeholder="EJ: LENOVO">
             <label>SERIAL</label>
-            <input type="text" id="serA" required placeholder="SERIAL">
+            <input type="text" id="serA" required placeholder="S/N">
             <label>CANTIDAD</label>
             <input type="number" id="canA" required min="1" value="1">
             <button type="submit" id="btnA">💾 GUARDAR ACCESORIO</button>
-            <div id="lA" class="loader">⏳ GUARDANDO...</div>
+            <div id="lA" class="loader">⏳ SINCRONIZANDO...</div>
         </form>
     </div>
 </div>
 
 <script>
-    // 1. PEGA AQUÍ TU URL DE LA API
-    const urlBase = "https://script.google.com/macros/s/AKfycbwMpX9MnfJFHQLsxyzxT8lT0ERtP4DMsFZp68uoGUzDpmFTOY-Q3IyY-g3Oh-nTZn1e-A/exec";
+    // URL DE TU API DE INVENTARIO (GAS)
+    const url = "https://script.google.com/macros/s/AKfycbwMpX9MnfJFHQLsxyzxT8lT0ERtP4DMsFZp68uoGUzDpmFTOY-Q3IyY-g3Oh-nTZn1e-A/exec";
 
     function tab(id) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -108,70 +107,64 @@
     async function cargar() {
         const loader = document.getElementById('loadStock');
         const tablas = document.getElementById('tablas');
-        const errorBox = document.getElementById('errorBox');
-        
         loader.style.display = 'block';
-        errorBox.style.display = 'none';
         tablas.innerHTML = '';
 
         try {
-            // Agregamos un timestamp para evitar que el navegador use datos viejos (Caché)
-            const urlConCacheBuster = urlBase + "?t=" + new Date().getTime();
-            const r = await fetch(urlConCacheBuster);
+            const r = await fetch(url);
             const d = await r.json();
 
-            if (d.error) { throw new Error(d.error); }
-
-            // TABLA HERRAMIENTAS
-            let h = '<h4>HERRAMIENTAS</h4><table><tr><th>CANT</th><th>DESCRIPCIÓN</th></tr>';
-            d.herramientas.forEach(f => {
-                let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
-                h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]}</td></tr>`;
+            // Dibujar Herramientas
+            let h = '<h4>HERRAMIENTAS / INSUMOS</h4><table><tr><th>CANT</th><th>DESCRIPCIÓN</th></tr>';
+            d.herramientas.forEach(fila => {
+                let cl = fila[0] > 0 ? 'badge-v' : 'badge-r';
+                h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]}</td></tr>`;
             });
             h += '</table>';
 
-            // TABLA ACCESORIOS
-            h += '<h4 style="margin-top:20px">ACCESORIOS</h4><table><tr><th>CANT</th><th>EQUIPO</th><th>SERIAL</th></tr>';
-            d.accesorios.forEach(f => {
-                let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
-                h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]} ${f[2] || ''}</td><td>${f[3] || ''}</td></tr>`;
+            // Dibujar Accesorios
+            h += '<h4>ACCESORIOS / EQUIPOS</h4><table><tr><th>CANT</th><th>DETALLE</th><th>SERIAL</th></tr>';
+            d.accesorios.forEach(fila => {
+                let cl = fila[0] > 0 ? 'badge-v' : 'badge-r';
+                h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]} ${fila[2] || ''}</td><td>${fila[3] || ''}</td></tr>`;
             });
             
             tablas.innerHTML = h + '</table>';
-        } catch(e) { 
-            errorBox.style.display = 'block';
-            errorBox.innerText = "FALLO AL CARGAR: " + e.message;
+        } catch(e) {
+            tablas.innerHTML = '<p style="color:red; text-align:center;">ERROR AL CARGAR DATOS</p>';
         } finally {
             loader.style.display = 'none';
         }
     }
 
-    // FORMULARIO HERRAMIENTAS
+    // Enviar Herramientas
     document.getElementById('fH').onsubmit = async (e) => {
         e.preventDefault();
         document.getElementById('lH').style.display = 'block';
         document.getElementById('btnH').style.display = 'none';
         let cant = parseInt(document.getElementById('canH').value);
         if(document.getElementById('opH').value === 'retiro') cant = -Math.abs(cant);
+        
         const p = { tipo: "herramientas", herramienta: document.getElementById('nomH').value, cantidad: cant, tecnico: document.getElementById('tecH').value };
         await enviar(p, 'fH', 'lH', 'btnH');
     };
 
-    // FORMULARIO ACCESORIOS
+    // Enviar Accesorios
     document.getElementById('fA').onsubmit = async (e) => {
         e.preventDefault();
         document.getElementById('lA').style.display = 'block';
         document.getElementById('btnA').style.display = 'none';
         let cant = parseInt(document.getElementById('canA').value);
         if(document.getElementById('opA').value === 'retiro') cant = -Math.abs(cant);
+
         const p = { tipo: "accesorios", marca: document.getElementById('marA').value, serial: document.getElementById('serA').value, cantidad: cant, tecnico: document.getElementById('tecA').value };
         await enviar(p, 'fA', 'lA', 'btnA');
     };
 
     async function enviar(p, fId, lId, bId) {
         try {
-            await fetch(urlBase, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
-            alert("REGISTRO GUARDADO EN EXCEL");
+            await fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
+            alert("REGISTRO EXITOSO");
             document.getElementById(fId).reset();
             cargar();
             tab('stock');
