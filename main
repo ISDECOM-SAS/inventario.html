@@ -6,25 +6,24 @@
     <title>Inventario ISDECOM</title>
     <style>
         :root { --azul: #008fcc; --fondo: #f4f7f6; --rojo: #c53929; --verde: #137333; }
-        body { font-family: 'Calibri', sans-serif; background: var(--fondo); padding: 10px; text-transform: uppercase; font-size: 13px; margin: 0; }
-        .container { background: white; max-width: 500px; margin: 20px auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Calibri', sans-serif; background: var(--fondo); padding: 10px; text-transform: uppercase; font-size: 13px; }
+        .container { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         h2 { color: var(--azul); text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--azul); padding-bottom: 10px; }
         .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tab { flex: 1; padding: 12px; background: #eee; text-align: center; cursor: pointer; font-weight: bold; border-radius: 8px; }
+        .tab { flex: 1; padding: 10px; background: #eee; text-align: center; cursor: pointer; font-weight: bold; border-radius: 5px; }
         .tab.active { background: var(--azul); color: white; }
         .section { display: none; }
         .section.active { display: block; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: #444; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-weight: bold; }
-        button { width: 100%; padding: 14px; background: var(--azul); color: white; border: none; border-radius: 8px; font-weight: bold; margin-top: 20px; cursor: pointer; }
-        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 15px; padding: 10px; border: 1px dashed var(--azul); }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #444; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-weight: bold; }
+        button { width: 100%; padding: 12px; background: var(--azul); color: white; border: none; border-radius: 5px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 10px; padding: 10px; border: 1px dashed var(--azul); }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--azul); color: white; }
-        .badge { font-weight: bold; padding: 3px 6px; border-radius: 4px; display: inline-block; min-width: 25px; text-align: center; }
+        .badge { font-weight: bold; padding: 2px 5px; border-radius: 3px; display: inline-block; min-width: 20px; text-align: center; }
         .badge-v { background: #e6f4ea; color: var(--verde); }
         .badge-r { background: #fce8e6; color: var(--rojo); }
-        h4 { margin-top: 25px; color: #333; border-left: 4px solid var(--azul); padding-left: 10px; }
     </style>
 </head>
 <body>
@@ -39,8 +38,8 @@
     </div>
 
     <div id="stock" class="section active">
-        <button onclick="cargar()" style="background:#444;">🔄 REFRESCAR INVENTARIO</button>
-        <div id="loadStock" class="loader">⏳ CONECTANDO CON LA API...</div>
+        <button onclick="cargar()" style="background:#444;">🔄 REFRESCAR STOCK</button>
+        <div id="loadStock" class="loader">⏳ CONECTANDO CON LA BASE DE DATOS...</div>
         <div id="tablas"></div>
     </div>
 
@@ -58,8 +57,8 @@
             </select>
             <label>OPERACIÓN</label>
             <select id="opH"><option value="ingreso">🟢 INGRESO</option><option value="retiro">🔴 RETIRO</option></select>
-            <label>NOMBRE HERRAMIENTA / INSUMO</label>
-            <input type="text" id="nomH" required placeholder="EJ: TALADRO">
+            <label>HERRAMIENTA</label>
+            <input type="text" id="nomH" required placeholder="NOMBRE">
             <label>CANTIDAD</label>
             <input type="number" id="canH" required min="1" value="1">
             <button type="submit" id="btnH">💾 GUARDAR CAMBIO</button>
@@ -94,8 +93,8 @@
 </div>
 
 <script>
-    // URL DE TU API DE INVENTARIO (GAS)
-    const url = "https://script.google.com/macros/s/AKfycbwMpX9MnfJFHQLsxyzxT8lT0ERtP4DMsFZp68uoGUzDpmFTOY-Q3IyY-g3Oh-nTZn1e-A/exec";
+    // URL DE LA API DE INVENTARIO (GAS)
+    const url = "https://script.google.com/macros/s/AKfycbzJDtP3ND_Iob8pOiSeF1TOqVt-2-TdDySf3G6Q146RuIA4aCFLJ83fJFgrIJz8Axu3cQ/exec";
 
     function tab(id) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -114,49 +113,37 @@
             const r = await fetch(url);
             const d = await r.json();
 
-            // Dibujar Herramientas
             let h = '<h4>HERRAMIENTAS / INSUMOS</h4><table><tr><th>CANT</th><th>DESCRIPCIÓN</th></tr>';
             d.herramientas.forEach(fila => {
                 let cl = fila[0] > 0 ? 'badge-v' : 'badge-r';
                 h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]}</td></tr>`;
             });
-            h += '</table>';
-
-            // Dibujar Accesorios
-            h += '<h4>ACCESORIOS / EQUIPOS</h4><table><tr><th>CANT</th><th>DETALLE</th><th>SERIAL</th></tr>';
+            h += '</table><h4>ACCESORIOS / EQUIPOS</h4><table><tr><th>CANT</th><th>DETALLE</th><th>SERIAL</th></tr>';
             d.accesorios.forEach(fila => {
                 let cl = fila[0] > 0 ? 'badge-v' : 'badge-r';
                 h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]} ${fila[2] || ''}</td><td>${fila[3] || ''}</td></tr>`;
             });
-            
             tablas.innerHTML = h + '</table>';
-        } catch(e) {
-            tablas.innerHTML = '<p style="color:red; text-align:center;">ERROR AL CARGAR DATOS</p>';
-        } finally {
-            loader.style.display = 'none';
-        }
+        } catch(e) { tablas.innerHTML = '<p style="color:red;text-align:center">ERROR DE CONEXIÓN</p>'; }
+        loader.style.display = 'none';
     }
 
-    // Enviar Herramientas
     document.getElementById('fH').onsubmit = async (e) => {
         e.preventDefault();
         document.getElementById('lH').style.display = 'block';
         document.getElementById('btnH').style.display = 'none';
         let cant = parseInt(document.getElementById('canH').value);
         if(document.getElementById('opH').value === 'retiro') cant = -Math.abs(cant);
-        
         const p = { tipo: "herramientas", herramienta: document.getElementById('nomH').value, cantidad: cant, tecnico: document.getElementById('tecH').value };
         await enviar(p, 'fH', 'lH', 'btnH');
     };
 
-    // Enviar Accesorios
     document.getElementById('fA').onsubmit = async (e) => {
         e.preventDefault();
         document.getElementById('lA').style.display = 'block';
         document.getElementById('btnA').style.display = 'none';
         let cant = parseInt(document.getElementById('canA').value);
         if(document.getElementById('opA').value === 'retiro') cant = -Math.abs(cant);
-
         const p = { tipo: "accesorios", marca: document.getElementById('marA').value, serial: document.getElementById('serA').value, cantidad: cant, tecnico: document.getElementById('tecA').value };
         await enviar(p, 'fA', 'lA', 'btnA');
     };
@@ -172,7 +159,6 @@
         document.getElementById(lId).style.display = 'none';
         document.getElementById(bId).style.display = 'block';
     }
-
     window.onload = cargar;
 </script>
 </body>
