@@ -17,14 +17,14 @@
         label { display: block; margin-top: 10px; font-weight: bold; color: #444; }
         input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-weight: bold; }
         button { width: 100%; padding: 12px; background: var(--azul); color: white; border: none; border-radius: 5px; font-weight: bold; margin-top: 20px; cursor: pointer; }
-        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 10px; border: 1px dashed var(--azul); padding: 10px; }
+        .loader { display: none; text-align: center; font-weight: bold; color: var(--azul); margin-top: 10px; padding: 10px; background: #e1f5fe; border-radius: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: var(--azul); color: white; }
         .badge { font-weight: bold; padding: 2px 5px; border-radius: 3px; display: inline-block; min-width: 20px; text-align: center; }
         .badge-v { background: #e6f4ea; color: var(--verde); }
         .badge-r { background: #fce8e6; color: var(--rojo); }
-        .error-msg { color: red; font-weight: bold; text-align: center; margin-top: 10px; font-size: 10px; }
+        .error-msg { color: red; font-weight: bold; text-align: center; margin-top: 10px; font-size: 11px; border: 1px solid red; padding: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -40,7 +40,7 @@
 
     <div id="stock" class="section active">
         <button onclick="cargar()" style="background:#444;">🔄 ACTUALIZAR LISTADO</button>
-        <div id="loadStock" class="loader">⏳ CONECTANDO CON LA BASE DE DATOS...</div>
+        <div id="loadStock" class="loader">⏳ CONECTANDO CON EXCEL...</div>
         <div id="errorBox" class="error-msg"></div>
         <div id="tablas"></div>
     </div>
@@ -52,6 +52,9 @@
                 <option value="FRANCISCO">FRANCISCO</option>
                 <option value="JUAN CAMILO">JUAN CAMILO</option>
                 <option value="ANDRES FELIPE">ANDRES FELIPE</option>
+                <option value="CAMILO HERRERA">CAMILO HERRERA</option>
+                <option value="FELIPE DE LOS RIOS">FELIPE DE LOS RIOS</option>
+                <option value="JUAN FELIPE">JUAN FELIPE</option>
                 <option value="ELIANA">ELIANA</option>
             </select>
             <label>OPERACIÓN</label>
@@ -61,7 +64,7 @@
             <label>CANTIDAD</label>
             <input type="number" id="canH" required min="1" value="1">
             <button type="submit" id="btnH">💾 GUARDAR HERRAMIENTA</button>
-            <div id="lH" class="loader">⏳ ENVIANDO DATOS...</div>
+            <div id="lH" class="loader">⏳ GUARDANDO...</div>
         </form>
     </div>
 
@@ -71,24 +74,29 @@
             <select id="tecA" required>
                 <option value="FRANCISCO">FRANCISCO</option>
                 <option value="JUAN CAMILO">JUAN CAMILO</option>
+                <option value="ANDRES FELIPE">ANDRES FELIPE</option>
+                <option value="CAMILO HERRERA">CAMILO HERRERA</option>
+                <option value="FELIPE DE LOS RIOS">FELIPE DE LOS RIOS</option>
+                <option value="JUAN FELIPE">JUAN FELIPE</option>
+                <option value="ELIANA">ELIANA</option>
             </select>
             <label>OPERACIÓN</label>
             <select id="opA"><option value="ingreso">🟢 INGRESO</option><option value="retiro">🔴 RETIRO</option></select>
             <label>MARCA / MODELO</label>
-            <input type="text" id="marA" required placeholder="EJ: HP / 14-CF">
+            <input type="text" id="marA" required placeholder="EQUIPO">
             <label>SERIAL</label>
-            <input type="text" id="serA" required placeholder="SERIAL ÚNICO">
+            <input type="text" id="serA" required placeholder="SERIAL">
             <label>CANTIDAD</label>
             <input type="number" id="canA" required min="1" value="1">
             <button type="submit" id="btnA">💾 GUARDAR ACCESORIO</button>
-            <div id="lA" class="loader">⏳ ENVIANDO DATOS...</div>
+            <div id="lA" class="loader">⏳ GUARDANDO...</div>
         </form>
     </div>
 </div>
 
 <script>
-    // 1. PEGA AQUÍ TU URL DE LA API (DEBE TERMINAR EN /exec)
-    const url = "https://script.google.com/macros/s/AKfycbwMpX9MnfJFHQLsxyzxT8lT0ERtP4DMsFZp68uoGUzDpmFTOY-Q3IyY-g3Oh-nTZn1e-A/exec";
+    // 1. PEGA AQUÍ TU URL DE LA API
+    const urlBase = "https://script.google.com/macros/s/AKfycbwMpX9MnfJFHQLsxyzxT8lT0ERtP4DMsFZp68uoGUzDpmFTOY-Q3IyY-g3Oh-nTZn1e-A/exec";
 
     function tab(id) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -103,44 +111,42 @@
         const errorBox = document.getElementById('errorBox');
         
         loader.style.display = 'block';
-        errorBox.innerText = '';
+        errorBox.style.display = 'none';
         tablas.innerHTML = '';
 
         try {
-            const r = await fetch(url);
-            if (!r.ok) throw new Error("La API no respondió correctamente");
-            
+            // Agregamos un timestamp para evitar que el navegador use datos viejos (Caché)
+            const urlConCacheBuster = urlBase + "?t=" + new Date().getTime();
+            const r = await fetch(urlConCacheBuster);
             const d = await r.json();
 
-            // HERRAMIENTAS
-            let h = '<h4>HERRAMIENTAS</h4><table><tr><th>CANT</th><th>NOMBRE</th></tr>';
-            if(d.herramientas && d.herramientas.length > 0) {
-                d.herramientas.forEach(f => {
-                    let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
-                    h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]}</td></tr>`;
-                });
-            } else { h += '<tr><td colspan="2">SIN DATOS</td></tr>'; }
+            if (d.error) { throw new Error(d.error); }
+
+            // TABLA HERRAMIENTAS
+            let h = '<h4>HERRAMIENTAS</h4><table><tr><th>CANT</th><th>DESCRIPCIÓN</th></tr>';
+            d.herramientas.forEach(f => {
+                let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
+                h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]}</td></tr>`;
+            });
             h += '</table>';
 
-            // ACCESORIOS
-            h += '<h4 style="margin-top:20px">ACCESORIOS</h4><table><tr><th>CANT</th><th>INFO</th><th>SERIAL</th></tr>';
-            if(d.accesorios && d.accesorios.length > 0) {
-                d.accesorios.forEach(f => {
-                    let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
-                    h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]} ${f[2] || ''}</td><td>${f[3] || 'S/N'}</td></tr>`;
-                });
-            } else { h += '<tr><td colspan="3">SIN DATOS</td></tr>'; }
+            // TABLA ACCESORIOS
+            h += '<h4 style="margin-top:20px">ACCESORIOS</h4><table><tr><th>CANT</th><th>EQUIPO</th><th>SERIAL</th></tr>';
+            d.accesorios.forEach(f => {
+                let cl = f[0] > 0 ? 'badge-v' : 'badge-r';
+                h += `<tr><td><span class="badge ${cl}">${f[0]}</span></td><td>${f[1]} ${f[2] || ''}</td><td>${f[3] || ''}</td></tr>`;
+            });
             
             tablas.innerHTML = h + '</table>';
         } catch(e) { 
-            errorBox.innerText = "ERROR: " + e.message + ". Revisa la URL de la API.";
-            console.error(e);
+            errorBox.style.display = 'block';
+            errorBox.innerText = "FALLO AL CARGAR: " + e.message;
         } finally {
             loader.style.display = 'none';
         }
     }
 
-    // ENVIAR HERRAMIENTAS
+    // FORMULARIO HERRAMIENTAS
     document.getElementById('fH').onsubmit = async (e) => {
         e.preventDefault();
         document.getElementById('lH').style.display = 'block';
@@ -151,7 +157,7 @@
         await enviar(p, 'fH', 'lH', 'btnH');
     };
 
-    // ENVIAR ACCESORIOS
+    // FORMULARIO ACCESORIOS
     document.getElementById('fA').onsubmit = async (e) => {
         e.preventDefault();
         document.getElementById('lA').style.display = 'block';
@@ -164,12 +170,12 @@
 
     async function enviar(p, fId, lId, bId) {
         try {
-            await fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
-            alert("✅ REGISTRO EXITOSO");
+            await fetch(urlBase, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
+            alert("REGISTRO GUARDADO EN EXCEL");
             document.getElementById(fId).reset();
             cargar();
             tab('stock');
-        } catch(e) { alert("❌ ERROR AL GUARDAR"); }
+        } catch(e) { alert("ERROR AL GUARDAR"); }
         document.getElementById(lId).style.display = 'none';
         document.getElementById(bId).style.display = 'block';
     }
