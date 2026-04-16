@@ -93,7 +93,7 @@
 </div>
 
 <script>
-    // URL DE LA API DE INVENTARIO (GAS)
+    // URL DE LA API DE INVENTARIO (GAS) - ASEGÚRATE QUE SEA LA ÚLTIMA DE "IMPLEMENTAR"
     const url = "https://script.google.com/macros/s/AKfycbySK62_y4VEmkkLuBym19EejaQm6Q8z9tMxrWE_scpoYxhy2n1R7tpeNdX_Kt4ymd0lLQ/exec";
 
     function tab(id) {
@@ -121,30 +121,52 @@
             h += '</table><h4>ACCESORIOS / EQUIPOS</h4><table><tr><th>CANT</th><th>DETALLE</th><th>SERIAL</th></tr>';
             d.accesorios.forEach(fila => {
                 let cl = fila[0] > 0 ? 'badge-v' : 'badge-r';
-                h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]} ${fila[2] || ''}</td><td>${fila[3] || ''}</td></tr>`;
+                h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]} ${fila[2]}</td><td>${fila[3]}</td></tr>`;
             });
             tablas.innerHTML = h + '</table>';
-        } catch(e) { tablas.innerHTML = '<p style="color:red;text-align:center">ERROR DE CONEXIÓN</p>'; }
-        loader.style.display = 'none';
+        } catch(e) { 
+            tablas.innerHTML = '<p style="color:red;text-align:center">ERROR AL CARGAR DATOS</p>'; 
+        } finally {
+            loader.style.display = 'none';
+        }
     }
 
     document.getElementById('fH').onsubmit = async (e) => {
         e.preventDefault();
-        document.getElementById('lH').style.display = 'block';
-        document.getElementById('btnH').style.display = 'none';
+        const btn = document.getElementById('btnH');
+        const load = document.getElementById('lH');
+        btn.style.display = 'none';
+        load.style.display = 'block';
+
         let cant = parseInt(document.getElementById('canH').value);
         if(document.getElementById('opH').value === 'retiro') cant = -Math.abs(cant);
-        const p = { tipo: "herramientas", herramienta: document.getElementById('nomH').value, cantidad: cant, tecnico: document.getElementById('tecH').value };
+
+        const p = { 
+            tipo: "herramientas", 
+            herramienta: document.getElementById('nomH').value, 
+            cantidad: cant, 
+            tecnico: document.getElementById('tecH').value 
+        };
         await enviar(p, 'fH', 'lH', 'btnH');
     };
 
     document.getElementById('fA').onsubmit = async (e) => {
         e.preventDefault();
-        document.getElementById('lA').style.display = 'block';
-        document.getElementById('btnA').style.display = 'none';
+        const btn = document.getElementById('btnA');
+        const load = document.getElementById('lA');
+        btn.style.display = 'none';
+        load.style.display = 'block';
+
         let cant = parseInt(document.getElementById('canA').value);
         if(document.getElementById('opA').value === 'retiro') cant = -Math.abs(cant);
-        const p = { tipo: "accesorios", marca: document.getElementById('marA').value, serial: document.getElementById('serA').value, cantidad: cant, tecnico: document.getElementById('tecA').value };
+
+        const p = { 
+            tipo: "accesorios", 
+            marca: document.getElementById('marA').value, 
+            serial: document.getElementById('serA').value, 
+            cantidad: cant, 
+            tecnico: document.getElementById('tecA').value 
+        };
         await enviar(p, 'fA', 'lA', 'btnA');
     };
 
@@ -155,10 +177,14 @@
             document.getElementById(fId).reset();
             cargar();
             tab('stock');
-        } catch(e) { alert("ERROR AL GUARDAR"); }
-        document.getElementById(lId).style.display = 'none';
-        document.getElementById(bId).style.display = 'block';
+        } catch(e) { 
+            alert("ERROR AL GUARDAR"); 
+        } finally {
+            document.getElementById(lId).style.display = 'none';
+            document.getElementById(bId).style.display = 'block';
+        }
     }
+
     window.onload = cargar;
 </script>
 </body>
