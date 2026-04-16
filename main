@@ -93,7 +93,6 @@
 </div>
 
 <script>
-    // URL DE LA API DE INVENTARIO (GAS) - ASEGÚRATE QUE SEA LA ÚLTIMA DE "IMPLEMENTAR"
     const url = "https://script.google.com/macros/s/AKfycbySK62_y4VEmkkLuBym19EejaQm6Q8z9tMxrWE_scpoYxhy2n1R7tpeNdX_Kt4ymd0lLQ/exec";
 
     function tab(id) {
@@ -111,6 +110,7 @@
 
         try {
             const r = await fetch(url);
+            if (!r.ok) throw new Error("Error en servidor");
             const d = await r.json();
 
             let h = '<h4>HERRAMIENTAS / INSUMOS</h4><table><tr><th>CANT</th><th>DESCRIPCIÓN</th></tr>';
@@ -121,11 +121,11 @@
             h += '</table><h4>ACCESORIOS / EQUIPOS</h4><table><tr><th>CANT</th><th>DETALLE</th><th>SERIAL</th></tr>';
             d.accesorios.forEach(fila => {
                 let cl = fila[0] > 0 ? 'badge-v' : 'badge-r';
-                h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1]} ${fila[2]}</td><td>${fila[3]}</td></tr>`;
+                h += `<tr><td><span class="badge ${cl}">${fila[0]}</span></td><td>${fila[1] || ''} ${fila[2] || ''}</td><td>${fila[3] || ''}</td></tr>`;
             });
             tablas.innerHTML = h + '</table>';
         } catch(e) { 
-            tablas.innerHTML = '<p style="color:red;text-align:center">ERROR AL CARGAR DATOS</p>'; 
+            tablas.innerHTML = `<p style="color:red;text-align:center">ERROR: ${e.message}. Verifica permisos de la API.</p>`; 
         } finally {
             loader.style.display = 'none';
         }
