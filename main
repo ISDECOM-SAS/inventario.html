@@ -94,7 +94,7 @@
 
 <script>
     // URL DE LA API DE INVENTARIO (GAS)
-    const url = "https://script.google.com/macros/s/AKfycbzJDtP3ND_Iob8pOiSeF1TOqVt-2-TdDySf3G6Q146RuIA4aCFLJ83fJFgrIJz8Axu3cQ/exec";
+    const url = "https://script.google.com/macros/s/AKfycbySK62_y4VEmkkLuBym19EejaQm6Q8z9tMxrWE_scpoYxhy2n1R7tpeNdX_Kt4ymd0lLQ/exec";
 
     function tab(id) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
